@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.vscode/
+newrelic.js
+newrelic_agent.log
+.DS_Store
