@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, SetMetadata } from "@nestjs/common";
+import { ExecutionContext, Injectable, SetMetadata, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { ExtractJwt } from "passport-jwt";
@@ -24,11 +24,11 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     this.extractAndSetBearerToken(request);
     return true;
   }
-  handleRequest(err: any, decodedToken: any) {
-    if (err) {
-      throw err;
+  handleRequest(err: any, user: any) {
+    if (err || !user) {
+      throw err || new UnauthorizedException('Invalid auth token');
     }
-    return decodedToken;
+    return user;
   }
 
   private extractAndSetBearerToken(request: any): string | null {

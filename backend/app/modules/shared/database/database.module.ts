@@ -1,8 +1,8 @@
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Comment } from "app/modules/comment/comment.entity";
-import { Forum } from "app/modules/forum/forum.entity";
+// import { Comment } from "app/modules/comment/comment.entity";
+// import { Forum } from "app/modules/forum/forum.entity";
 
 @Global()
 @Module({
@@ -13,8 +13,8 @@ import { Forum } from "app/modules/forum/forum.entity";
       useFactory: async (configService: ConfigService) => ({
         type: "postgres",
         url: configService.get<string>("DATABASE_URL"),
-        // entities: [__dirname + '../../**/*.entity{.ts,.js}'],
-        entities: [Forum, Comment],
+        entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+        // entities: [Forum, Comment],
         synchronize: true,
         logging: true,
       }),

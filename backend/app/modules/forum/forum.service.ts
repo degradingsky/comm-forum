@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 
 import { CreateForumDto } from "./dto/create-forum.dto"; // Import the DTO
 import { Forum } from "./forum.entity"; // Import the Forum entity
-import { UpdateForumDto } from "./dto/update-forum-dto";
+import { UpdateForumDto } from "./dto/update-forum.dto";
 
 @Injectable()
 export class ForumService {
@@ -40,6 +40,10 @@ export class ForumService {
 
     Object.assign(forum, updateDto);
     return await this.forumRepository.save(forum);
+  }
+
+  async getForums(): Promise<Forum[]> {
+    return await this.forumRepository.find();
   }
 
   private async getOwnedForumOrFail(forumId: string, userId: string): Promise<Forum> {

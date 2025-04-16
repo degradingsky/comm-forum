@@ -14,9 +14,6 @@ import { Public } from "../../guards/auth.guard";
 })
 @Public()
 export class LivecheckController {
-  /**
-   * healthcheck endpoint
-   */
   @Get()
   @HttpCode(HttpStatus.OK)
   livecheck() {

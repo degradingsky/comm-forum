@@ -23,6 +23,6 @@ export class Forum {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ default: "" })
+  @Column()
   userId: string;
 }

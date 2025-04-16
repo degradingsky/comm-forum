@@ -47,4 +47,8 @@ export class CommentService {
   
     return comment;
   }
+
+  async getComments(forumId: string): Promise<Comment[]> {
+    return await this.commentRepository.find({ where: { forumId }});
+  }
 }

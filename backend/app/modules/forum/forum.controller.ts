@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Patch, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from "@nestjs/common";
 import { CustomRequest } from "app/types/request.interface";
 
 import { CreateForumDto } from "./dto/create-forum.dto";
 import { Forum } from "./forum.entity";
 import { ForumService } from "./forum.service";
 import { ForumParamDTO } from "./dto/forum-param.dto";
-import { UpdateForumDto } from "./dto/update-forum-dto";
+import { UpdateForumDto } from "./dto/update-forum.dto";
 
 @Controller("forums")
 export class ForumController {
@@ -30,10 +30,15 @@ export class ForumController {
 
   @Patch(':forumId')
   async updateForum(
-    @Param('forumId') params: ForumParamDTO,
+    @Param() params: ForumParamDTO,
     @Body() updateDto: UpdateForumDto,
     @Req() req: CustomRequest,
   ) {
     return await this.forumService.updateForum(params.forumId, updateDto, req.user.sub);
+  }
+
+  @Get()
+  async getAllForum() {
+    return await this.forumService.getForums();
   }
 }
