@@ -1,6 +1,6 @@
 FROM node:20-alpine3.18 as base
 ENV NODE_ENV=production
-EXPOSE 5001
+EXPOSE 10000 5001
 
 FROM node:20-alpine3.18 as build 
 WORKDIR "/src"
