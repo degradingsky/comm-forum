@@ -27,7 +27,7 @@ export class ForumController {
     @Body() createForumDto: CreateForumDto,
     @Req() req: CustomRequest,
   ): Promise<Forum> {
-    return this.forumService.createForum(createForumDto, req.user.sub);
+    return this.forumService.createForum(createForumDto, req.user);
   }
 
   @Delete(":forumId")

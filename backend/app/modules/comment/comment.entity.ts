@@ -24,6 +24,9 @@ export class Comment {
   @Column()
   userId: string;
 
+  @Column({default: "John Doe"})
+  userName: string;
+
   @Column()
   forumId: string;
 

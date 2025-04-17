@@ -17,6 +17,7 @@ type Forum = {
   description: string;
   tags: string[];
   userId: string;
+  userName: string;
   createdAt: string;
 };
 
@@ -78,7 +79,7 @@ export default function HomeClient({
             >
               <CardContent>
                 <Typography variant="h6">{item?.title}</Typography>
-                <Typography>{`${item?.userId} posted on ${item?.createdAt}`}</Typography>
+                <Typography>{`${item?.userName} posted on ${item?.createdAt}`}</Typography>
               </CardContent>
             </Card>
           ))}

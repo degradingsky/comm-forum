@@ -25,4 +25,7 @@ export class Forum {
 
   @Column()
   userId: string;
+
+  @Column({default: "John Doe"})
+  userName: string;
 }
