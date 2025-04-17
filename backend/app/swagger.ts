@@ -25,7 +25,6 @@ export function setUpSwagger(app: INestApplication): void {
       "bearerAuth",
     )
     .addSecurityRequirements("bearerAuth")
-    .addSecurityRequirements("oauth2")
     .setContact("Rishu Anand", "-", "anand.rishu07@gmail.com");
 
   const config = documentBuilder.build();
