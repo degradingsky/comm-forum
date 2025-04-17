@@ -8,7 +8,7 @@
     "type": "commonjs",
     "private": true,
     "scripts": {
-        "build": "nest build",
+        "build": "nest build && cp .env dist/",
         "format": "prettier --write \"app/**/*.ts\"",
         "start": "nest start",
         "start:watch": "nest start --watch",
