@@ -13,7 +13,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       useFactory: async (configService: ConfigService) => ({
         type: "postgres",
         url: configService.get<string>("DATABASE_URL"),
-        entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+        entities: [__dirname + "/../../**/*.entity{.ts,.js}"],
         // entities: [Forum, Comment],
         synchronize: true,
         logging: true,

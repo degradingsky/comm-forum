@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+} from "@nestjs/common";
 import { CustomRequest } from "app/types/request.interface";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { Comment } from "./comment.entity";
@@ -16,22 +26,28 @@ export class CommentController {
     @Param() param: ForumParamDTO,
     @Req() req: CustomRequest,
   ): Promise<Comment> {
-    return this.commentService.createComment(createCommentDto, param.forumId, req.user.sub);
+    return this.commentService.createComment(
+      createCommentDto,
+      param.forumId,
+      req.user.sub,
+    );
   }
 
-  @Delete(':commentId')
+  @Delete(":commentId")
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteComment(
-    @Param() param: ForumCommentParamDTO, 
+    @Param() param: ForumCommentParamDTO,
     @Req() req: CustomRequest,
   ) {
-    await this.commentService.deleteComment(param.commentId, param.forumId, req.user.sub);
+    await this.commentService.deleteComment(
+      param.commentId,
+      param.forumId,
+      req.user.sub,
+    );
   }
 
   @Get()
-  async getComment(
-    @Param() param: ForumParamDTO,
-  ) {
+  async getComment(@Param() param: ForumParamDTO) {
     return await this.commentService.getComments(param.forumId);
   }
 }

@@ -17,7 +17,7 @@ import { CommentModule } from "./comment/comment.module";
     AuthModule,
     DatabaseModule,
     ForumModule,
-    CommentModule
+    CommentModule,
   ],
   controllers: [AppController],
 })
