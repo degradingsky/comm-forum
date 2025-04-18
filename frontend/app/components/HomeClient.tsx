@@ -148,7 +148,7 @@ export default function HomeClient({
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box onClick={() => handleCardClick(item)} sx={{ flexGrow: 1 }}>
                   <Typography variant="h6">{item.title}</Typography>
-                  <Typography>{`${item.userName} posted on ${item.createdAt}`}</Typography>
+                  <Typography>{`${item.userName} posted on ${new Date(item.createdAt).toLocaleString()}`}</Typography>
                 </Box>
                 {item.userId === user.userId && (
                   <Box sx={{ display: 'flex', gap: 1 }}>
