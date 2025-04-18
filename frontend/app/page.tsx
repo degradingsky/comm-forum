@@ -26,7 +26,17 @@ export default async function HomePage() {
         Authorization: `Bearer ${userDetails.token}`,
       },
     });
-    forumList = res.data;
+    forumList = res.data.map((f: any) => ({
+      ...f,
+      createdAtFormatted: new Date(f.createdAt).toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }),
+    }));
   } catch (error) {
     console.error('Error fetching forums:', error);
   }

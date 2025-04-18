@@ -34,6 +34,7 @@ type Forum = {
   userId: string;
   userName: string;
   createdAt: string;
+  createdAtFormatted: string;
 };
 
 export default function HomeClient({
@@ -59,7 +60,7 @@ export default function HomeClient({
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(user));
     axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
-    const expiryTime =  user.expiryAt * 1000;
+    const expiryTime = user.expiryAt * 1000;
     const currentTime = Date.now();
     const timeoutMs = expiryTime - currentTime - 60 * 1000;
     setTimeout(() => {
@@ -101,38 +102,38 @@ export default function HomeClient({
 
   return (
     <>
-      
+
       <AppBar position="static">
-  <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-  
-    <Typography variant="h6" sx={{ flex: 1 }}>
-      Community Forum
-    </Typography>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
-    <Typography variant="h6" sx={{ flex: 1, textAlign: 'center' }}>
-      Welcome, {user.userName}
-    </Typography>
+          <Typography variant="h6" sx={{ flex: 1 }}>
+            Community Forum
+          </Typography>
 
-    <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-      <Button color="inherit" onClick={handleLogout}>
-        Logout
-      </Button>
-    </Box>
-  </Toolbar>
-</AppBar>
+          <Typography variant="h6" sx={{ flex: 1, textAlign: 'center' }}>
+            Welcome, {user.userName}
+          </Typography>
 
-
-<Box sx={{ padding: 4 }}>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-    <Typography variant="h5">Forum Discussions</Typography>
-    <Button variant="contained" onClick={() => setOpenDialog(true)}>
-      Start New Discussion
-    </Button>
-  </Box>
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
 
-      
-        
+      <Box sx={{ padding: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h5">Forum Discussions</Typography>
+          <Button variant="contained" onClick={() => setOpenDialog(true)}>
+            Start New Discussion
+          </Button>
+        </Box>
+
+
+
+
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 4 }}>
           {forums.map((item) => (
@@ -148,7 +149,7 @@ export default function HomeClient({
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box onClick={() => handleCardClick(item)} sx={{ flexGrow: 1 }}>
                   <Typography variant="h6">{item.title}</Typography>
-                  <Typography>{`${item.userName} posted on ${new Date(item.createdAt).toLocaleString()}`}</Typography>
+                  <Typography>{`${item.userName} posted on ${item.createdAtFormatted}`}</Typography>
                 </Box>
                 {item.userId === user.userId && (
                   <Box sx={{ display: 'flex', gap: 1 }}>
