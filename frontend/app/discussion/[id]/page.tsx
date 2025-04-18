@@ -23,7 +23,6 @@ export default function DiscussionPage() {
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
-  const currentUser = 'John Doe'; // Replace with session data if available
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -105,7 +104,7 @@ export default function DiscussionPage() {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                   <Box>
                     <Typography variant="caption" color="text.secondary">
-                      {comment.userId} • {new Date(comment.createdAt).toLocaleDateString()}
+                      {comment.userId} • {new Date(comment.createdAt).toLocaleString()}
                     </Typography>
                     <Typography variant="body1" sx={{ mt: 0.5 }}>
                       {comment.content}
