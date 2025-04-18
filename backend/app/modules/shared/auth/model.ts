@@ -6,4 +6,5 @@ export type JwtPayload = {
   exp: number;
   scope?: string;
   azp: string;
+  name?: string
 };

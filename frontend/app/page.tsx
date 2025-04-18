@@ -14,7 +14,10 @@ export default async function HomePage() {
   let forumList = [];
   console.log('====>>>', session)
 
-  const token = session.tokenSet.accessToken
+  let token = session.tokenSet.idToken;
+
+  // sessionStorage.setItem('accessToken', token);
+  // sessionStorage.setItem('userName', session?.user?.name! ?? "name-not-found");
   
   try {
     const res = await api.get('/forums', {

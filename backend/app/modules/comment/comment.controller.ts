@@ -29,7 +29,7 @@ export class CommentController {
     return this.commentService.createComment(
       createCommentDto,
       param.forumId,
-      req.user.sub,
+      req.user
     );
   }
 

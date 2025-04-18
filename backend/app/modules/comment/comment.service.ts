@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 
 import { Comment } from "./comment.entity";
 import { CreateCommentDto } from "./dto/create-comment.dto";
+import { JwtPayload } from "../shared/auth/model";
 
 @Injectable()
 export class CommentService {
@@ -19,13 +20,14 @@ export class CommentService {
   async createComment(
     createCommentDto: CreateCommentDto,
     forumId: string,
-    userId: string,
+    user: JwtPayload,
   ): Promise<Comment> {
     const { content } = createCommentDto;
 
     const comment = this.commentRepository.create({
       content,
-      userId,
+      userId: user.sub,
+      userName: user.name,
       forumId,
     });
 

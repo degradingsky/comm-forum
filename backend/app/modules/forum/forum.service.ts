@@ -9,6 +9,7 @@ import { Repository } from "typeorm";
 import { CreateForumDto } from "./dto/create-forum.dto"; // Import the DTO
 import { Forum } from "./forum.entity"; // Import the Forum entity
 import { UpdateForumDto } from "./dto/update-forum.dto";
+import { JwtPayload } from "../shared/auth/model";
 
 @Injectable()
 export class ForumService {
@@ -19,7 +20,7 @@ export class ForumService {
 
   async createForum(
     createForumDto: CreateForumDto,
-    userId: string,
+    user: JwtPayload,
   ): Promise<Forum> {
     const { title, description, tags } = createForumDto;
 
@@ -27,7 +28,8 @@ export class ForumService {
       title,
       description,
       tags,
-      userId,
+      userId: user.sub,
+      userName: user.name
     });
 
     return this.forumRepository.save(forum); // Save the forum in the database
