@@ -2,6 +2,7 @@ import { auth0 } from "@/lib/auth0"
 import { redirect } from 'next/navigation';
 import HomeClient from './components/HomeClient';
 import api from "@/lib/axios";
+import Cookies from 'js-cookie';
 
 export default async function HomePage() {
   const session = await auth0.getSession();

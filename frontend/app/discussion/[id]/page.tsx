@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -11,74 +11,68 @@ import {
   CardContent,
   IconButton,
   Divider,
+  CircularProgress,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import api from '@/lib/axios';
+import { useForum } from '@/context/ForumContext';
 
 export default function DiscussionPage() {
   const { id } = useParams();
-
-  const discussion = {
-    title: `Forum Discussion #${id}`,
-    desc: `This is the description for discussion ${id}.`,
-  };
-
-  const currentUser = 'John Doe'; // Assume logged-in user name
-
-  const [comments, setComments] = useState([
-    { name: 'Alice', comment: 'This is really interesting!', date: '2025-04-15' },
-    { name: 'Bob', comment: 'I agree with the points here.', date: '2025-04-16' },
-  ]);
-
+  const { forum } = useForum();
+  const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(true);
+  const currentUser = 'John Doe'; // Replace with session data if available
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await api.get(`/forums/${id}/comments`);
+        setComments(res.data);
+      } catch (err) {
+        console.error('Failed to load comments:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchComments();
+  }, [id]);
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
     const commentObj = {
-      name: currentUser,
-      comment: newComment,
-      date: new Date().toISOString().split('T')[0],
+      content: newComment,
     };
 
-    await mockPostComment(commentObj);
-
-    setComments([commentObj, ...comments]);
-    setNewComment('');
+    try {
+      const res = await api.post(`/forums/${id}/comments`, commentObj);
+      setComments((prev) => [res.data, ...prev]);
+      setNewComment('');
+    } catch (err) {
+      console.error('Failed to post comment:', err);
+    }
   };
 
-  const handleDelete = (index: number) => {
-    setComments((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleEdit = (index: number) => {
-    const commentToEdit = comments[index];
-    setNewComment(commentToEdit.comment);
-    setComments((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // Simulated API call
-  const mockPostComment = async (comment: any) => {
-    return new Promise((resolve) => {
-      console.log('Mock API: Posting comment →', comment);
-      setTimeout(resolve, 300); // Simulate delay
-    });
+  const handleDelete = async (commentId: string) => {
+    try {
+      await api.delete(`/forums/${id}/comments/${commentId}`);
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err) {
+      console.error('Failed to delete comment:', err);
+    }
   };
 
   return (
     <Box sx={{ padding: 4, maxWidth: 800, margin: 'auto' }}>
-      <Typography variant="h4" gutterBottom>
-        {discussion.title}
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        {discussion.desc}
-      </Typography>
+      <Typography variant="h4" gutterBottom>{forum?.title}</Typography>
+      <Typography variant="body1" gutterBottom>{forum?.desc}</Typography>
 
       <Divider sx={{ my: 3 }} />
 
-      <Typography variant="h6" gutterBottom>
-        Add a Comment
-      </Typography>
+      <Typography variant="h6" gutterBottom>Add a Comment</Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
         <TextField
           label="Write your comment"
@@ -98,32 +92,32 @@ export default function DiscussionPage() {
       <Typography variant="h6" gutterBottom>
         Comments ({comments.length})
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {comments.map((comment, idx) => (
-          <Card key={idx} variant="outlined">
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <Box>
-                  <Typography variant="caption" color="text.secondary">
-                    {comment.name} • {comment.date}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mt: 0.5 }}>
-                    {comment.comment}
-                  </Typography>
-                </Box>
-                <Box>
-                  <IconButton onClick={() => handleEdit(idx)} size="small">
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(idx)} size="small">
+
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {comments.map((comment) => (
+            <Card key={comment.id} variant="outlined">
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary">
+                      {comment.userId} • {new Date(comment.createdAt).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 0.5 }}>
+                      {comment.content}
+                    </Typography>
+                  </Box>
+                  <IconButton onClick={() => handleDelete(comment.id)} size="small">
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

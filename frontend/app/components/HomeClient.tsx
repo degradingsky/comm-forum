@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 import {
   AppBar,
   Toolbar,
@@ -10,6 +11,8 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
+import { useForum } from '@/context/ForumContext';
+import { useEffect } from 'react';
 
 type Forum = {
   id: string;
@@ -27,11 +30,13 @@ export default function HomeClient({
   user: any;
   forumList: Forum[];
 }) {
+  const { setForum } = useForum();
   const router = useRouter();
   console.log('====', user, forumList)
 
-  const handleCardClick = (id: string) => {
-    router.push(`/discussion/${id}`);
+  const handleCardClick = (item: Forum) => {
+    setForum({ id: item.id, title: item.title, desc: item.description });
+    router.push(`/discussion/${item.id}`);
   };
 
   const handleLogout = () => {
@@ -74,7 +79,7 @@ export default function HomeClient({
                 transition: '0.2s',
                 '&:hover': { boxShadow: 4 },
               }}
-              onClick={() => handleCardClick(item?.id)}
+              onClick={() => handleCardClick(item)}
             >
               <CardContent>
                 <Typography variant="h6">{item?.title}</Typography>
