@@ -80,6 +80,7 @@ export default function NewDiscussionDialog({
       setErrors({ title: '', description: '' });
   
     } catch (error) {
+        setDisable(false);
       setSnackbar({ open: true, message: editData ? 'Failed to update forum' : 'Failed to create forum', severity: 'error' });
     }
   };
