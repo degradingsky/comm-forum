@@ -28,7 +28,12 @@ export default function DiscussionPage() {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await api.get(`/forums/${id}/comments`);
+        let token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImxKMUFxVGRXNEVJZWd3UUt5em05bCJ9.eyJnaXZlbl9uYW1lIjoiUmlzaHUiLCJmYW1pbHlfbmFtZSI6IkFuYW5kIiwibmlja25hbWUiOiJhbmFuZC5yaXNodTA3IiwibmFtZSI6IlJpc2h1IEFuYW5kIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0xXMjJ0WkxpMUtaMkZNcm1TenB2RDN0ZjlCSi1VcmhFM2U2aXBsYjhlUk0wa082dz1zOTYtYyIsInVwZGF0ZWRfYXQiOiIyMDI1LTA0LTE4VDA4OjU3OjU3LjA1OFoiLCJlbWFpbCI6ImFuYW5kLnJpc2h1MDdAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vZGV2LW12am9ra21qaWZ3YTUwbGkudXMuYXV0aDAuY29tLyIsImF1ZCI6InlWNWZsbFhkZWZWb2NUdTROVHc1a3VEU2ZmcGxMTUJFIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTI2MjUxODA5MDc5NTk1OTY5NjkiLCJpYXQiOjE3NDQ5NjY2NzgsImV4cCI6MTc0NTAwMjY3OCwic2lkIjoia1c1ekNOdkRSajF4M1FBT2M1c2c2WWNnUGhHcUVvQUYiLCJub25jZSI6IkI5dFNnTl9zR3gtcnQ4dXNQb0Y1YTQtTmJ3cVlkcmFDMkN2bWRyR2Q2elEifQ.CyvQgLo5-jT8_VoSDlR5YKa7HxFrcvaXn5tbWxBKf29xF1Pea3QuJEeGllvfD9b3SooojBUqk6Ji_uCuXgqflCZmC-oO8pGkpehm0UaHyNFIcS9wHugJJb8NyY7VcjjAkCFu2PRoBMvxkD9DR2vS-dcjqbllevRu57XH-_ePQpDzJlJs8X32IZhWBscr_O0EF0_8NyocB47_VEqBcLOn2ak5OsaNFKBowe9s6ItU0Tpda7RJj7R9vKtXnNkf9a5UIGyEMKGqj_r7izUyl95odADCXAHpmauGGSacohe8_uTZdMF3g8QKEETsSIiptj6b5Oxu82x9U5cYNmeYlpDJHg'
+        const res = await api.get(`/forums/${id}/comments`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setComments(res.data);
       } catch (err) {
         console.error('Failed to load comments:', err);
