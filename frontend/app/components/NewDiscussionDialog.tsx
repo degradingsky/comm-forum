@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import api from '@/lib/axios';
-import Cookies from 'js-cookie';
 
 type NewDiscussionDialogProps = {
   open: boolean;
@@ -35,6 +34,7 @@ export default function NewDiscussionDialog({
   const [description, setDescription] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [errors, setErrors] = useState({ title: '', description: '' });
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
     if (editData) {
@@ -47,6 +47,7 @@ export default function NewDiscussionDialog({
   }, [editData, open]);
 
   const handleSubmit = async () => {
+    setDisable(true);
     const validationErrors = {
       title: title.trim() === '' ? 'Title is required' : '',
       description: description.trim() === '' ? 'Description is required' : '',
@@ -61,10 +62,6 @@ export default function NewDiscussionDialog({
         await api.patch(`/forums/${editData.id}`, {
           title,
           description,
-        }, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get('accessToken')}`,
-          },
         });
         setSnackbar({ open: true, message: 'Forum updated successfully!', severity: 'success' });
       } else {
@@ -72,14 +69,10 @@ export default function NewDiscussionDialog({
           title,
           description,
           tags: [],
-        }, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get('accessToken')}`,
-          },
         });
         setSnackbar({ open: true, message: 'Forum created successfully!', severity: 'success' });
       }
-  
+      setDisable(false);
       onSuccess();
       onClose();
       setTitle('');
@@ -96,7 +89,7 @@ export default function NewDiscussionDialog({
     <>
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>{editData ? 'Edit Discussion' : 'Start New Discussion'}</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+        <DialogContent sx={{ overflowY: 'visible', display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
             label="Title"
             fullWidth
@@ -114,7 +107,7 @@ export default function NewDiscussionDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button variant="contained" onClick={handleSubmit} disabled={disable}>
             {editData ? 'Update' : 'Create'}
           </Button>
         </DialogActions>

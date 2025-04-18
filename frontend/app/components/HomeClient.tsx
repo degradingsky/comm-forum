@@ -23,6 +23,8 @@ import { useForum } from '@/context/ForumContext';
 import { useEffect, useState } from 'react';
 import api from '@/lib/axios';
 import NewDiscussionDialog from './NewDiscussionDialog';
+import axiosInstance from '@/lib/axios';
+
 
 type Forum = {
   id: string;
@@ -38,7 +40,12 @@ export default function HomeClient({
   user,
   forumList: initialForumList,
 }: {
-  user: any;
+  user: {
+    token: string;
+    userId: string;
+    userName: string;
+    expiryAt: number;
+  };
   forumList: Forum[];
 }) {
   const { setForum } = useForum();
@@ -49,14 +56,21 @@ export default function HomeClient({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+    const expiryTime =  user.expiryAt * 1000;
+    const currentTime = Date.now();
+    const timeoutMs = expiryTime - currentTime - 60 * 1000;
+    setTimeout(() => {
+      console.log('[AutoLogout] Logging out...');
+      window.location.href = '/auth/logout';
+    }, timeoutMs);
+  }, []);
+
   const fetchForums = async () => {
     try {
-      const accessToken = Cookies.get('accessToken');
-      const res = await api.get('/forums', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const res = await api.get('/forums');
       setForums(res.data);
     } catch (err) {
       console.error('Error fetching updated forums:', err);
@@ -75,12 +89,7 @@ export default function HomeClient({
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const accessToken = Cookies.get('accessToken');
-      await api.delete(`/forums/${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      await api.delete(`/forums/${deleteId}`);
       setSnackbar({ open: true, message: 'Deleted successfully!', severity: 'success' });
       setDeleteId(null);
       fetchForums();
@@ -101,7 +110,7 @@ export default function HomeClient({
     </Typography>
 
     <Typography variant="h6" sx={{ flex: 1, textAlign: 'center' }}>
-      Welcome, {user?.name}
+      Welcome, {user.userName}
     </Typography>
 
     <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
@@ -141,7 +150,7 @@ export default function HomeClient({
                   <Typography variant="h6">{item.title}</Typography>
                   <Typography>{`${item.userName} posted on ${item.createdAt}`}</Typography>
                 </Box>
-                {item.userId === user.sub && (
+                {item.userId === user.userId && (
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <IconButton onClick={() => { setEditData(item); setOpenDialog(true); }}>
                       <EditIcon />

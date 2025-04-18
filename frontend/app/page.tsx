@@ -2,7 +2,6 @@ import { auth0 } from "@/lib/auth0"
 import { redirect } from 'next/navigation';
 import HomeClient from './components/HomeClient';
 import api from "@/lib/axios";
-import Cookies from 'js-cookie';
 
 export default async function HomePage() {
   const session = await auth0.getSession();
@@ -12,17 +11,19 @@ export default async function HomePage() {
   }
 
   let forumList = [];
-  console.log('====>>>', session)
 
-  let token = session.tokenSet.idToken;
+  let userDetails = {
+    token: session.tokenSet.idToken!,
+    userId: session.user.sub,
+    userName: session.user.name!,
+    expiryAt: session.tokenSet.expiresAt
+  }
 
-  // sessionStorage.setItem('accessToken', token);
-  // sessionStorage.setItem('userName', session?.user?.name! ?? "name-not-found");
   
   try {
     const res = await api.get('/forums', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userDetails.token}`,
       },
     });
     forumList = res.data;
@@ -30,5 +31,5 @@ export default async function HomePage() {
     console.error('Error fetching forums:', error);
   }
 
-  return <HomeClient user={session.user} forumList={forumList} />;
+  return <HomeClient user={userDetails} forumList={forumList} />;
 }
