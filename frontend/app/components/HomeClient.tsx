@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import {
   AppBar,
   Toolbar,
@@ -72,7 +71,11 @@ export default function HomeClient({
   const fetchForums = async () => {
     try {
       const res = await api.get('/forums');
-      setForums(res.data);
+      const forumList = res.data.map((f: any) => ({
+        ...f,
+        createdAtFormatted: new Date(f?.createdAt).toLocaleString()
+      }));
+      setForums(forumList);
     } catch (err) {
       console.error('Error fetching updated forums:', err);
     }
@@ -149,7 +152,7 @@ export default function HomeClient({
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box onClick={() => handleCardClick(item)} sx={{ flexGrow: 1 }}>
                   <Typography variant="h6">{item.title}</Typography>
-                  <Typography>{`${item.userName} posted on ${item.createdAtFormatted}`}</Typography>
+                  <Typography>{`${item.userName} posted on ${item?.createdAtFormatted}`}</Typography>
                 </Box>
                 {item.userId === user.userId && (
                   <Box sx={{ display: 'flex', gap: 1 }}>
